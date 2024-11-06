@@ -1,0 +1,1 @@
+# booking-schedule-query-service
