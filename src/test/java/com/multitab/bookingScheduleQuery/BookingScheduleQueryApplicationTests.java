@@ -1,0 +1,13 @@
+package com.multitab.bookingScheduleQuery;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest
+class BookingScheduleQueryApplicationTests {
+
+	@Test
+	void contextLoads() {
+	}
+
+}
