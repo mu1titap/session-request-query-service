@@ -1,5 +1,5 @@
 package com.multitab.bookingScheduleQuery.messagequeue;
-import com.multitab.bookingScheduleQuery.dto.in.MentoringAddAfterOutDto;
+import com.multitab.bookingScheduleQuery.dto.messageIn.MentoringAddAfterOutDto;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.context.annotation.Bean;
