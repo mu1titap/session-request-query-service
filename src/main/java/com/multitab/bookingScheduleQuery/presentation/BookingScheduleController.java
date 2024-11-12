@@ -1,11 +1,10 @@
 package com.multitab.bookingScheduleQuery.presentation;
 
-import com.multitab.bookingScheduleQuery.application.BookingScheduleQueryService;
+import com.multitab.bookingScheduleQuery.application.SessionRequestQueryService;
 import com.multitab.bookingScheduleQuery.common.entity.BaseResponse;
 import com.multitab.bookingScheduleQuery.dto.in.UserScheduleSearchRequestDto;
 import com.multitab.bookingScheduleQuery.dto.out.ScheduleResponseDto;
 import com.multitab.bookingScheduleQuery.dto.out.SessionRequestResponseDto;
-import com.multitab.bookingScheduleQuery.entity.Schedule;
 import com.multitab.bookingScheduleQuery.viewObject.in.UserScheduleSearchRequestVo;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -18,15 +17,18 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/booking-schedule-read")
 public class BookingScheduleController {
-    private final BookingScheduleQueryService bookingScheduleQueryService;
+    private final SessionRequestQueryService bookingScheduleQueryService;
 
     @Operation(summary = "유저 스케줄 조회" , description = "유저 uuid, 년월('2024-10')")
     @GetMapping("/schedule-list")
     public BaseResponse<ScheduleResponseDto> getScheduleListByUserUuidAndYearMonth(
-            @ParameterObject UserScheduleSearchRequestVo requestVo
+           UserScheduleSearchRequestVo requestVo
     ) {
+        log.info("requestVo : "+requestVo);
+        UserScheduleSearchRequestDto dto = UserScheduleSearchRequestDto.from(requestVo);
+
         return new BaseResponse<>(
-                bookingScheduleQueryService.findByUserUuidAndYearMonth(UserScheduleSearchRequestDto.from(requestVo))
+                bookingScheduleQueryService.findByUserUuidAndYearMonth(dto)
         );
     }
 

@@ -14,16 +14,18 @@ import java.time.LocalTime;
 public class ScheduleList {
     private String mentoringSessionUuid;
     private String mentoringName;
+
     private LocalDate startDate;
     private LocalTime startTime;
     private LocalDate endDate;
     private LocalTime endTime;
-    private ScheduleStatus status;
+
+    private Status status;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public void initStatus(ScheduleStatus status) {
+    public void initStatus(Status status) {
         this.status = status;
     }
 }

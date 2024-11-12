@@ -1,10 +1,7 @@
 package com.multitab.bookingScheduleQuery.entity;
 
 import com.multitab.bookingScheduleQuery.entity.vo.ScheduleList;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import nonapi.io.github.classgraph.json.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -19,6 +16,7 @@ public class Schedule {
     private String userUuid;
     private String yearMonth; // 연도와 월로 관리(스케줄 무한정 업데이트 방지 ex) "2024-09"
 
+    @Setter
     private List<ScheduleList> scheduleLists;
 
     @Builder
