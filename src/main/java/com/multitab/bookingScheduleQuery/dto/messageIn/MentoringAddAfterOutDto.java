@@ -22,6 +22,7 @@ public class MentoringAddAfterOutDto {
 
     private String name;
 
+    private String description;
     private String detail;
 
     private String mentorUuid;
@@ -72,14 +73,6 @@ public class MentoringAddAfterOutDto {
                         .updatedAt(session.getUpdatedAt())
                         .build())
                 .toList();
-    }
-    // 멘토링 저장 dto -> 스케줄 엔티티
-    public Schedule toScheduleEntity() {
-        return Schedule.builder()
-                .userUuid(this.getMentorUuid())
-                .yearMonth(DateConverter.convertToYearMonth(this.getCreatedAt()))
-                .scheduleLists(toScheduleListEntities())
-                .build();
     }
 
 }

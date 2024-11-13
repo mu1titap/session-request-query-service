@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Document(collection = "sessionRequest")
+@Document(collection = "sessionUserList")
 @ToString(exclude = "sessionRequestLists")
 public class SessionRequest {
     @Id

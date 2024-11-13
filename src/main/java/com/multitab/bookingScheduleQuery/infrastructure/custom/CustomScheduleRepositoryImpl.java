@@ -1,7 +1,9 @@
 package com.multitab.bookingScheduleQuery.infrastructure.custom;
 
+import com.multitab.bookingScheduleQuery.dto.messageIn.AfterSessionUserOutDto;
 import com.multitab.bookingScheduleQuery.entity.Schedule;
 import com.multitab.bookingScheduleQuery.entity.vo.ScheduleList;
+import com.multitab.bookingScheduleQuery.serviceCall.dto.in.SessionTimeResponseOutDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -19,11 +21,11 @@ public class CustomScheduleRepositoryImpl implements CustomScheduleRepository {
 
 
     @Override
-    public void updateMentorSchedule(String userUuid, List<ScheduleList> scheduleListEntities) {
+    public void updateMentorSchedule(String userUuid, List<ScheduleList> scheduleLists, String yearMonth ) {
         Query query = new Query();
-        query.addCriteria(Criteria.where("userUuid").is(userUuid));
+        query.addCriteria(Criteria.where("userUuid").is(userUuid).and("yearMonth").is(yearMonth));
         Update update = new Update();
-        update.push("scheduleLists").each(scheduleListEntities);
+        update.push("scheduleLists").each(scheduleLists);
 
         mongoTemplate.updateFirst(query, update, Schedule.class);
     }
@@ -45,5 +47,33 @@ public class CustomScheduleRepositoryImpl implements CustomScheduleRepository {
 
         return schedule;
     }
+
+    @Override
+    public void updateMenteeSchedule(
+            AfterSessionUserOutDto afterSessionDto,
+            SessionTimeResponseOutDto sessionTimeDto,
+            String yearMonth )
+    {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("userUuid")
+                .is(afterSessionDto.getMenteeUuid())
+                .and("yearMonth").is(yearMonth) );
+        Update update = new Update();
+        ScheduleList newSchedule = ScheduleList.builder()
+                .mentoringSessionUuid(afterSessionDto.getSessionUuid())
+                .mentoringName(afterSessionDto.getMentoringName())
+                .startDate(sessionTimeDto.getStartDate())
+                .startTime(sessionTimeDto.getStartTime())
+                .endDate(sessionTimeDto.getEndDate())
+                .endTime(sessionTimeDto.getEndTime())
+                .status(afterSessionDto.getStatus())
+                .createdAt(afterSessionDto.getCreatedAt())
+                .updatedAt(afterSessionDto.getUpdatedAt())
+                .build();
+        update.push("scheduleLists", newSchedule);
+        mongoTemplate.updateFirst(query, update, Schedule.class);
+    }
+
+
 
 }
