@@ -1,6 +1,7 @@
 package com.multitab.bookingScheduleQuery.messagequeue;
 
-import com.multitab.bookingScheduleQuery.application.SessionRequestQueryService;
+import com.multitab.bookingScheduleQuery.application.ScheduleService;
+import com.multitab.bookingScheduleQuery.application.SessionRequestService;
 import com.multitab.bookingScheduleQuery.dto.messageIn.AfterSessionUserOutDto;
 import com.multitab.bookingScheduleQuery.dto.messageIn.MentoringAddAfterOutDto;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +13,8 @@ import org.springframework.stereotype.Service;
 @Log4j2
 @RequiredArgsConstructor
 public class KafkaConsumer {
-    private final SessionRequestQueryService bookingScheduleQueryService;
+    private final SessionRequestService sessionRequestService;
+    private final ScheduleService scheduleService;
 
     /**
      * 멘토링 생성 이벤트 컨슘
@@ -23,9 +25,9 @@ public class KafkaConsumer {
             containerFactory = "mentoringAddAfterDtoListener")
     public void createMentoring(MentoringAddAfterOutDto dto) {
         // 멘토링 세션 참가 리스트 Read Data 생성
-        bookingScheduleQueryService.createSessionRequestList(dto);
+        sessionRequestService.createSessionRequestList(dto);
         // 멘토 스케줄 insert or push update
-        bookingScheduleQueryService.updateMentorSchedule(dto);
+        scheduleService.updateMentorSchedule(dto);
     }
     /**
      * 멘토링 세션 참가 등록 이벤트 컨슘
@@ -38,9 +40,9 @@ public class KafkaConsumer {
     public void registerSessionUser(AfterSessionUserOutDto dto) {
         log.info("AfterSessionUserOutDto: {}", dto);
         // 세션 참가리스트 업데이트
-        bookingScheduleQueryService.updateSessionRequestList(dto);
+        sessionRequestService.updateSessionRequestList(dto);
         // 유저(멘티)의 스케줄 insert or update
-        bookingScheduleQueryService.updateMenteeSchedule(dto);
+        scheduleService.updateMenteeSchedule(dto);
     }
 
 

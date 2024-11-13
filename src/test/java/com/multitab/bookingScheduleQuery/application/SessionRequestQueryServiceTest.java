@@ -11,12 +11,11 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @SpringBootTest
 @Log4j2
 class SessionRequestQueryServiceTest {
-    @Autowired SessionRequestQueryService sessionRequestQueryService;
+    @Autowired
+    SessionRequestService sessionRequestQueryService;
 
     @Test
     void updateMentorSchedule(){

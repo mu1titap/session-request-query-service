@@ -4,14 +4,11 @@ import com.multitab.bookingScheduleQuery.dto.in.UserScheduleSearchRequestDto;
 import com.multitab.bookingScheduleQuery.dto.messageIn.AfterSessionUserOutDto;
 import com.multitab.bookingScheduleQuery.dto.messageIn.MentoringAddAfterOutDto;
 import com.multitab.bookingScheduleQuery.dto.out.ScheduleResponseDto;
-import com.multitab.bookingScheduleQuery.dto.out.SessionRequestResponseDto;
 import com.multitab.bookingScheduleQuery.entity.Schedule;
 import com.multitab.bookingScheduleQuery.entity.vo.ScheduleList;
 import com.multitab.bookingScheduleQuery.entity.vo.Status;
 import com.multitab.bookingScheduleQuery.infrastructure.ScheduleMongoRepository;
-import com.multitab.bookingScheduleQuery.infrastructure.SessionRequestMongoRepository;
 import com.multitab.bookingScheduleQuery.infrastructure.custom.CustomScheduleRepository;
-import com.multitab.bookingScheduleQuery.infrastructure.custom.CustomSessionRequestRepository;
 import com.multitab.bookingScheduleQuery.serviceCall.MentoringServiceFeignClient;
 import com.multitab.bookingScheduleQuery.serviceCall.dto.in.SessionTimeResponseOutDto;
 import com.multitab.bookingScheduleQuery.util.DateConverter;
@@ -27,27 +24,16 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 @Log4j2
-public class SessionRequestQueryServiceImpl implements SessionRequestQueryService {
-    private final SessionRequestMongoRepository sessionRequestMongoRepository;
+public class ScheduleServiceImpl implements  ScheduleService {
     private final ScheduleMongoRepository scheduleMongoRepository;
     private final CustomScheduleRepository customScheduleRepository;
-    private final CustomSessionRequestRepository customSessionRequestRepository;
     private final MentoringServiceFeignClient mentoringServiceFeignClient;
-    @Override
-    public void createSessionRequestList(MentoringAddAfterOutDto dto) {
-        sessionRequestMongoRepository.saveAll(dto.toSessionRequestEntities());
-    }
-
-
     @Override
     public void updateMentorSchedule(MentoringAddAfterOutDto dto) {
         /**
-         *  예를 들어 멘토링에 세션을 3개 생성했다, 세션의 시작날짜가 "2024-10" 인게 2개, "2024-11" 인게 1개 이라면 각각
-         *  "2024-10" : [세션1, 세션2] , "2024-11" : [세션3] 으로 매핑.
-         *  이러면 이미 존재하는 스케줄인지 날짜별(map이라 중복 없음) + userUuid 로 2번의 DB 조회면 충분하다
-         *
-         * 이렇게 하지 않고 세션1, 세션2, 세션3 의 startDate와 userUuid로 조회하면 3번의 DB 조회가 필요하다.
-         * 만든 멘토링 세션 수 만큼 read db를 찌르기 때문에 위의 방법으로 하는게 효율적으로 보인다.
+         * - 멘토링 생성 시 멘토의 스케줄 업데이트 (멘토링 세션만큼)
+         *  1. ex) "2024-10" : [세션1, 세션2] , "2024-11" : [세션3] 으로 매핑.
+         *  2. 날짜, 회원uuid 로 기존데이터 판단 후  insert or update
          */
         String userUuid = dto.getMentorUuid();
         List<ScheduleList> scheduleListEntities = dto.toScheduleListEntities();
@@ -70,21 +56,16 @@ public class SessionRequestQueryServiceImpl implements SessionRequestQueryServic
             }
             // 없으면 insert
             else{
-                Schedule schedule = Schedule.builder()
-                        .userUuid(userUuid)
-                        .yearMonth(yearMonth)
-                        .scheduleLists(sessionYearMonthMap.get(yearMonth))
-                        .build();
-                scheduleMongoRepository.save(schedule);
+                scheduleMongoRepository.save(
+                        Schedule.builder()
+                                .userUuid(userUuid)
+                                .yearMonth(yearMonth)
+                                .scheduleLists(sessionYearMonthMap.get(yearMonth))
+                                .build()
+                );
             }
         }
     }
-
-    @Override
-    public void updateSessionRequestList(AfterSessionUserOutDto dto) {
-        customSessionRequestRepository.updateSessionRequestList(dto);
-    }
-
     @Override
     public void updateMenteeSchedule(AfterSessionUserOutDto dto) {
         SessionTimeResponseOutDto sessionTime = mentoringServiceFeignClient.getSessionTime(dto.getSessionUuid());
@@ -107,6 +88,13 @@ public class SessionRequestQueryServiceImpl implements SessionRequestQueryServic
         }
 
     }
+    @Override
+    public ScheduleResponseDto findByUserUuidAndYearMonth(UserScheduleSearchRequestDto userScheduleSearchRequestDto) {
+        log.info("userScheduleSearchRequestDto : "+userScheduleSearchRequestDto);
+        Schedule schedule = customScheduleRepository.findByUserScheduleOrderByStartDateAsc
+                (userScheduleSearchRequestDto.getUserUuid(), userScheduleSearchRequestDto.getYearMonth());
+        return ScheduleResponseDto.from(schedule);
+    }
 
     private ScheduleList createNewMenteeSchedule(AfterSessionUserOutDto dto, SessionTimeResponseOutDto sessionTime) {
         return ScheduleList.builder()
@@ -122,19 +110,4 @@ public class SessionRequestQueryServiceImpl implements SessionRequestQueryServic
                 .build();
     }
 
-    @Override
-    public ScheduleResponseDto findByUserUuidAndYearMonth(UserScheduleSearchRequestDto userScheduleSearchRequestDto) {
-        log.info("userScheduleSearchRequestDto : "+userScheduleSearchRequestDto);
-        Schedule schedule = customScheduleRepository.findByUserScheduleOrderByStartDateAsc
-                (userScheduleSearchRequestDto.getUserUuid(), userScheduleSearchRequestDto.getYearMonth());
-        return ScheduleResponseDto.from(schedule);
-    }
-
-    @Override
-    public SessionRequestResponseDto findSessionRequestResponseDto(String sessionUuid) {
-        return SessionRequestResponseDto
-                .from(customSessionRequestRepository.findSessionRequestBySessionUuid(sessionUuid));
-
-
-    }
 }
