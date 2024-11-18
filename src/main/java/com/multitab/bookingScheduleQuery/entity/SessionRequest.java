@@ -34,5 +34,9 @@ public class SessionRequest {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
+    public void initNowHeadCount() {
+        this.nowHeadCount = 0;
+    }
+
 
 }

@@ -24,7 +24,8 @@ public class SessionRequestController {
     private final SessionRequestService sessionRequestService;
 
 
-    @Operation(summary = "멘토링 세션 참가요청 정보 조회(최대,최소,현재 신청인원 수, 예약마감일)")
+    @Operation(summary = "멘토링 세션 참가요청 정보 조회(최대,최소,현재 신청인원 수, 예약마감일)"
+            ,tags = {"멘토링 세션 참가자(세션 상태, 참가자 리스트)"})
     @GetMapping("/session-request-info/{mentoringSessionUuid}")
     public BaseResponse<SessionRequestResponseDto> getSessionRequestInfo(
             @ParameterObject @PathVariable(name = "mentoringSessionUuid") String mentoringSessionUuid

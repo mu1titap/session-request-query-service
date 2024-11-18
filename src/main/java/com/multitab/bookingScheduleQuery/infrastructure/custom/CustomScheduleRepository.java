@@ -1,7 +1,6 @@
 package com.multitab.bookingScheduleQuery.infrastructure.custom;
 
-import com.multitab.bookingScheduleQuery.dto.in.UserScheduleSearchRequestDto;
-import com.multitab.bookingScheduleQuery.dto.messageIn.AfterSessionUserOutDto;
+import com.multitab.bookingScheduleQuery.messagequeue.messageIn.AfterSessionUserOutDto;
 import com.multitab.bookingScheduleQuery.entity.Schedule;
 import com.multitab.bookingScheduleQuery.entity.vo.ScheduleList;
 import com.multitab.bookingScheduleQuery.serviceCall.dto.in.SessionTimeResponseOutDto;
@@ -10,6 +9,10 @@ import java.util.List;
 
 public interface CustomScheduleRepository {
     void updateMentorSchedule(String userUuid, List<ScheduleList> scheduleLists , String yearMonth);
+
+    void cancelMentorSchedule(String userUuid, String yearMonth, String sessionUuid);
+
+    void reRegisterMentorSchedule(String userUuid, String yearMonth, String sessionUuid);
 
     Schedule findByUserScheduleOrderByStartDateAsc(String userUuid, String yearMonth);
 

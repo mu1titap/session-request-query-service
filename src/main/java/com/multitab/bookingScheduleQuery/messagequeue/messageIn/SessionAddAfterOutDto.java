@@ -1,4 +1,4 @@
-package com.multitab.bookingScheduleQuery.dto.messageIn;
+package com.multitab.bookingScheduleQuery.messagequeue.messageIn;
 
 import lombok.*;
 
@@ -11,13 +11,9 @@ import java.time.LocalTime;
 @NoArgsConstructor
 @Builder
 @ToString
-public class MentoringSessionAddAfterOutDto {
+public class SessionAddAfterOutDto {
     private String sessionId;
-
     private String sessionUuid;
-
-    private String mentoringId;
-    private String mentoringUuid;
 
     private LocalDate startDate;
 
@@ -36,11 +32,9 @@ public class MentoringSessionAddAfterOutDto {
     private Integer price;
 
     private Boolean isClosed;
-
     private Boolean isDeleted;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-
-
 }
+

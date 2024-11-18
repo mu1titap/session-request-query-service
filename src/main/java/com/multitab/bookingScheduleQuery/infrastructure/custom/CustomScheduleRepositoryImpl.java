@@ -1,8 +1,9 @@
 package com.multitab.bookingScheduleQuery.infrastructure.custom;
 
-import com.multitab.bookingScheduleQuery.dto.messageIn.AfterSessionUserOutDto;
+import com.multitab.bookingScheduleQuery.messagequeue.messageIn.AfterSessionUserOutDto;
 import com.multitab.bookingScheduleQuery.entity.Schedule;
 import com.multitab.bookingScheduleQuery.entity.vo.ScheduleList;
+import com.multitab.bookingScheduleQuery.entity.vo.Status;
 import com.multitab.bookingScheduleQuery.serviceCall.dto.in.SessionTimeResponseOutDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -11,6 +12,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 
@@ -27,6 +29,32 @@ public class CustomScheduleRepositoryImpl implements CustomScheduleRepository {
         Update update = new Update();
         update.push("scheduleLists").each(scheduleLists);
 
+        mongoTemplate.updateFirst(query, update, Schedule.class);
+    }
+
+    @Override
+    public void cancelMentorSchedule(String userUuid, String yearMonth, String sessionUuid) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("userUuid").is(userUuid)
+                .and("yearMonth").is(yearMonth)
+                .and("scheduleLists.mentoringSessionUuid").is(sessionUuid)
+        );
+        Update update = new Update();
+        update.set("scheduleLists.$.status", Status.CANCELLED_BY_USER); // "유저 취소상태로 업데이트"
+        update.set("scheduleLists.$.updatedAt", LocalDateTime.now());
+        mongoTemplate.updateFirst(query, update, Schedule.class);
+    }
+
+    @Override
+    public void reRegisterMentorSchedule(String userUuid, String yearMonth, String sessionUuid) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("userUuid").is(userUuid)
+                .and("yearMonth").is(yearMonth)
+                .and("scheduleLists.mentoringSessionUuid").is(sessionUuid)
+        );
+        Update update = new Update();
+        update.set("scheduleLists.$.status", Status.PENDING); // "유저 대기상태로 업데이트"
+        update.set("scheduleLists.$.updatedAt", LocalDateTime.now());
         mongoTemplate.updateFirst(query, update, Schedule.class);
     }
 

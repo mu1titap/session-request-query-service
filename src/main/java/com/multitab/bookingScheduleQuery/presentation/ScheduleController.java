@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 public class ScheduleController {
     private final ScheduleService scheduleService;
 
-    @Operation(summary = "유저 스케줄 조회" , description = "유저 uuid, 년월('2024-10')")
+    @Operation(summary = "유저 스케줄 조회" , description = "유저 uuid, 년월('2024-10')" ,tags = {"스케줄"})
     @GetMapping("/schedule-list")
     public BaseResponse<ScheduleResponseDto> getScheduleListByUserUuidAndYearMonth(
            UserScheduleSearchRequestVo requestVo

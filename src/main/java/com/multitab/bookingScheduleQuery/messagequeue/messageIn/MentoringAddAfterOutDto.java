@@ -1,9 +1,7 @@
-package com.multitab.bookingScheduleQuery.dto.messageIn;
+package com.multitab.bookingScheduleQuery.messagequeue.messageIn;
 
-import com.multitab.bookingScheduleQuery.entity.Schedule;
 import com.multitab.bookingScheduleQuery.entity.SessionRequest;
 import com.multitab.bookingScheduleQuery.entity.vo.ScheduleList;
-import com.multitab.bookingScheduleQuery.util.DateConverter;
 import lombok.*;
 
 import java.time.LocalDateTime;
