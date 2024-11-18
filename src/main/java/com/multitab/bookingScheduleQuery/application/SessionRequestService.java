@@ -1,9 +1,6 @@
 package com.multitab.bookingScheduleQuery.application;
 
-import com.multitab.bookingScheduleQuery.dto.in.UserScheduleSearchRequestDto;
-import com.multitab.bookingScheduleQuery.dto.messageIn.AfterSessionUserOutDto;
-import com.multitab.bookingScheduleQuery.dto.messageIn.MentoringAddAfterOutDto;
-import com.multitab.bookingScheduleQuery.dto.out.ScheduleResponseDto;
+import com.multitab.bookingScheduleQuery.messagequeue.messageIn.*;
 import com.multitab.bookingScheduleQuery.dto.out.SessionRequestResponseDto;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,11 +11,16 @@ public interface SessionRequestService {
     @Transactional
     void createSessionRequestList(MentoringAddAfterOutDto dto);
 
+    @Transactional
+    void createSessionRequestList(SessionCreatedAfterOutDto dto);
 
     // 멘티의  세션 참가 등록 시 세션의 참가 리스트 push update
     @Transactional
     void updateSessionRequestList(AfterSessionUserOutDto dto);
-
+    @Transactional
+    void cancelSessionUser(CancelSessionUserMessage dto);
+    @Transactional
+    void reRegisterSessionUser(ReRegisterSessionUserMessage dto);
 
     /**
      * 조회

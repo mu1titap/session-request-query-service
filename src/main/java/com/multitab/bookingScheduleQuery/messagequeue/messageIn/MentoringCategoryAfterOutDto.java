@@ -1,4 +1,4 @@
-package com.multitab.bookingScheduleQuery.dto.messageIn;
+package com.multitab.bookingScheduleQuery.messagequeue.messageIn;
 
 import lombok.*;
 
