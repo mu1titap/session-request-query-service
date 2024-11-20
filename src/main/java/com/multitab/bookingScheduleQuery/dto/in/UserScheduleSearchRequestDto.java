@@ -13,9 +13,9 @@ public class UserScheduleSearchRequestDto {
     private String userUuid;
     private String yearMonth;
 
-    public static UserScheduleSearchRequestDto from(UserScheduleSearchRequestVo vo) {
+    public static UserScheduleSearchRequestDto of (String userUuid, UserScheduleSearchRequestVo vo) {
         return UserScheduleSearchRequestDto.builder()
-                .userUuid(vo.getUserUuid())
+                .userUuid(userUuid)
                 .yearMonth(vo.getYearMonth())
                 .build();
     }

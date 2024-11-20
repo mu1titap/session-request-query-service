@@ -1,5 +1,6 @@
 package com.multitab.bookingScheduleQuery.infrastructure.custom;
 
+import com.multitab.bookingScheduleQuery.entity.vo.Status;
 import com.multitab.bookingScheduleQuery.messagequeue.messageIn.AfterSessionUserOutDto;
 import com.multitab.bookingScheduleQuery.messagequeue.messageIn.CancelSessionUserMessage;
 import com.multitab.bookingScheduleQuery.messagequeue.messageIn.ReRegisterSessionUserMessage;
@@ -15,5 +16,7 @@ public interface CustomSessionRequestRepository {
 
 
     void reRegisterSessionUser(ReRegisterSessionUserMessage dto);
+
+    void updateSessionRequestStatus(String sessionUuid, String userUuid, Status status);
 }
 

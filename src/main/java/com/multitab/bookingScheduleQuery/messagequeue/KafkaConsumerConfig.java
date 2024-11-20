@@ -2,6 +2,7 @@ package com.multitab.bookingScheduleQuery.messagequeue;
 import com.multitab.bookingScheduleQuery.messagequeue.messageIn.*;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.EnableKafka;
@@ -16,12 +17,15 @@ import java.util.Map;
 @EnableKafka
 @Configuration
 public class KafkaConsumerConfig {
+    @Value("${kafka.cluster.uri}")
+    private String kafkaClusterUri;
+
     // 멘토링 생성 완료
     @Bean
     public ConsumerFactory<String, MentoringAddAfterOutDto> mentoringConsumerFactory(){
         Map<String, Object> props = new HashMap<>();
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:29092, localhost:39092, localhost:49092");
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, "kafka-bookingSchedule-query-service");
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaClusterUri);
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, "kafka-sessionRequest-query-service");
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
         props.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
@@ -38,7 +42,7 @@ public class KafkaConsumerConfig {
     @Bean
     public ConsumerFactory<String, AfterSessionUserOutDto> sessionUserConsumerFactory(){
         Map<String, Object> props = new HashMap<>();
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:29092, localhost:39092, localhost:49092");
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaClusterUri);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "kafka-sessionRequest-query-service");
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
@@ -56,7 +60,7 @@ public class KafkaConsumerConfig {
     @Bean
     public ConsumerFactory<String, CancelSessionUserMessage> cancelSessionUserConsumerFactory(){
         Map<String, Object> props = new HashMap<>();
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:29092, localhost:39092, localhost:49092");
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaClusterUri);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "kafka-sessionRequest-query-service");
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
@@ -74,7 +78,7 @@ public class KafkaConsumerConfig {
     @Bean
     public ConsumerFactory<String, ReRegisterSessionUserMessage> reRegisterSessionUserConsumerFactory(){
         Map<String, Object> props = new HashMap<>();
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:29092, localhost:39092, localhost:49092");
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaClusterUri);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "kafka-sessionRequest-query-service");
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
@@ -92,7 +96,7 @@ public class KafkaConsumerConfig {
     @Bean
     public ConsumerFactory<String, SessionCreatedAfterOutDto> addSessionConsumerFactory(){
         Map<String, Object> props = new HashMap<>();
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:29092, localhost:39092, localhost:49092");
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaClusterUri);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "kafka-sessionRequest-query-service");
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
@@ -103,6 +107,24 @@ public class KafkaConsumerConfig {
     public ConcurrentKafkaListenerContainerFactory<String, SessionCreatedAfterOutDto> addSessionUserOutDtoListener() {
         ConcurrentKafkaListenerContainerFactory<String, SessionCreatedAfterOutDto> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(addSessionConsumerFactory());
+        return factory;
+    }
+
+    // 세션 유저 상태 업데이트
+    @Bean
+    public ConsumerFactory<String, SessionUserUpdateMessage> updateSessionUserConsumerFactory(){
+        Map<String, Object> props = new HashMap<>();
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaClusterUri);
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, "kafka-sessionRequest-query-service");
+        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
+        props.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
+        return new DefaultKafkaConsumerFactory<>(props, new StringDeserializer(), new JsonDeserializer<>(SessionUserUpdateMessage.class, false));
+    }
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, SessionUserUpdateMessage> updateSessionUserListener() {
+        ConcurrentKafkaListenerContainerFactory<String, SessionUserUpdateMessage> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(updateSessionUserConsumerFactory());
         return factory;
     }
 

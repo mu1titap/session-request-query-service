@@ -6,12 +6,15 @@ import com.multitab.bookingScheduleQuery.entity.vo.ScheduleList;
 import com.multitab.bookingScheduleQuery.entity.vo.Status;
 import com.multitab.bookingScheduleQuery.serviceCall.dto.in.SessionTimeResponseOutDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 
+import javax.swing.text.Document;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
@@ -62,9 +65,12 @@ public class CustomScheduleRepositoryImpl implements CustomScheduleRepository {
     public Schedule findByUserScheduleOrderByStartDateAsc(String userUuid, String yearMonth) {
         // 1. userUuid와 yearMonth로 Schedule 문서 조회
         Query query = new Query();
-        query.addCriteria(Criteria.where("userUuid").is(userUuid).and("yearMonth").is(yearMonth));
+        query.addCriteria(Criteria.where("userUuid").is(userUuid)
+                .and("yearMonth").is(yearMonth)
+                //.and("scheduleLists.status").in(Status.PENDING, Status.CONFIRMED, Status.END)
+                .and("scheduleLists.status").in(Status.PENDING, Status.CONFIRMED, Status.END)
+        );
         Schedule schedule = mongoTemplate.findOne(query, Schedule.class);
-
         // 2. startDate 와 startTime 기준으로 정렬
         if (schedule != null && schedule.getScheduleLists() != null) {
             schedule.getScheduleLists().sort(
@@ -102,6 +108,18 @@ public class CustomScheduleRepositoryImpl implements CustomScheduleRepository {
         mongoTemplate.updateFirst(query, update, Schedule.class);
     }
 
+    @Override
+    public void updateMenteeScheduleStatus(String userUuid, String yearMonth, String sessionUuid, Status status) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("userUuid").is(userUuid)
+                .and("yearMonth").is(yearMonth)
+                .and("scheduleLists.mentoringSessionUuid").is(sessionUuid)
+        );
+        Update update = new Update();
+        update.set("scheduleLists.$.status", status);
+        update.set("scheduleLists.$.updatedAt", LocalDateTime.now());
+        mongoTemplate.updateFirst(query, update, Schedule.class);
+    }
 
 
 }

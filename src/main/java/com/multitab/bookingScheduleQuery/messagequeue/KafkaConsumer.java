@@ -81,6 +81,22 @@ public class KafkaConsumer {
         scheduleService.reRegisterSessionUser(dto);
     }
 
+    /**
+     * 세션 유저 업데이트 이벤트 컨슘
+     */
+
+    @KafkaListener(topics = "update-session-user", groupId = "kafka-sessionRequest-query-service",
+            containerFactory = "updateSessionUserListener")
+    public void updateSessionUser(SessionUserUpdateMessage dto) {
+        // 세션 참가리스트 업데이트
+        sessionRequestService.updateSessionRequestStatus(dto);
+        // 유저 스케줄 업데이트
+        scheduleService.updateSessionUserStatus(dto);
+        log.info("updateSessionUser 성공 : " + dto);
+    }
+
+
+
 
 }
 

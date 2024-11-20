@@ -47,6 +47,11 @@ public class SessionRequestServiceImpl implements SessionRequestService {
         customSessionRequestRepository.reRegisterSessionUser(dto);
     }
 
+    @Override
+    public void updateSessionRequestStatus(SessionUserUpdateMessage dto) {
+        customSessionRequestRepository.updateSessionRequestStatus(dto.getSessionUuid(),dto.getUserUuid(),dto.getStatus());
+    }
+
 
     @Override
     public SessionRequestResponseDto findSessionRequestResponseDto(String sessionUuid) {

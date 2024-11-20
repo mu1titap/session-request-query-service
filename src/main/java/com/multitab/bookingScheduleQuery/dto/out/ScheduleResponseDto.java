@@ -19,10 +19,10 @@ public class ScheduleResponseDto {
     private List<ScheduleList> scheduleLists;
 
     public static ScheduleResponseDto from(Schedule entity){
-        return ScheduleResponseDto.builder()
+        return entity != null ? ScheduleResponseDto.builder()
                 .userUuid(entity.getUserUuid())
                 .yearMonth(entity.getYearMonth())
                 .scheduleLists(entity.getScheduleLists())
-                .build();
+                .build() : null;
     }
 }
