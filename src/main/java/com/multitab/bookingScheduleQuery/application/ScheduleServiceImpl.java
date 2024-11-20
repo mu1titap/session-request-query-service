@@ -128,6 +128,13 @@ public class ScheduleServiceImpl implements  ScheduleService {
     }
 
     @Override
+    public void updateSessionUserStatus(SessionUserUpdateMessage dto) {
+        String yearMonth = DateConverter.convertToYearMonth(dto.getStartDate());
+        customScheduleRepository.updateMenteeScheduleStatus(dto.getUserUuid(), yearMonth, dto.getSessionUuid(),dto.getStatus());
+
+    }
+
+    @Override
     public ScheduleResponseDto findByUserUuidAndYearMonth(UserScheduleSearchRequestDto userScheduleSearchRequestDto) {
         log.info("userScheduleSearchRequestDto : "+userScheduleSearchRequestDto);
         Schedule schedule = customScheduleRepository.findByUserScheduleOrderByStartDateAsc

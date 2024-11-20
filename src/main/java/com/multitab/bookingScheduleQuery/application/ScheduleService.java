@@ -21,6 +21,9 @@ public interface ScheduleService {
 
     @Transactional
     void reRegisterSessionUser(ReRegisterSessionUserMessage dto);
+
+    @Transactional
+    void updateSessionUserStatus(SessionUserUpdateMessage dto);
     /**
      * 조회
      */

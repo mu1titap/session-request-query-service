@@ -22,10 +22,11 @@ public interface SessionRequestService {
     @Transactional
     void reRegisterSessionUser(ReRegisterSessionUserMessage dto);
 
+    @Transactional
+    void updateSessionRequestStatus(SessionUserUpdateMessage dto);
     /**
      * 조회
      */
-
     // 세션 uuid 로 세션 신청 상태 조회 (참가자 리스트 X)
     SessionRequestResponseDto findSessionRequestResponseDto(String sessionUuid);
 

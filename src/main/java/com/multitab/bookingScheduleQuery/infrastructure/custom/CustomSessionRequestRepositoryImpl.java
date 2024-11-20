@@ -78,4 +78,18 @@ public class CustomSessionRequestRepositoryImpl implements CustomSessionRequestR
 
     }
 
+    @Override
+    public void updateSessionRequestStatus(String sessionUuid, String userUuid, Status status) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("mentoringSessionUuid")
+                .is(sessionUuid)
+                .and("sessionRequestLists.menteeUuid").is(userUuid)
+        );
+        Update update = new Update();
+        update.set("sessionRequestLists.$.status", status); //
+        update.set("sessionRequestLists.$.updatedAt", LocalDateTime.now());
+
+        mongoTemplate.updateFirst(query, update, SessionRequest.class);
+    }
+
 }

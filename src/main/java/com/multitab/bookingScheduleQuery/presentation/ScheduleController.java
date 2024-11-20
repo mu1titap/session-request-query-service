@@ -23,13 +23,11 @@ public class ScheduleController {
     @Operation(summary = "유저 스케줄 조회" , description = "유저 uuid, 년월('2024-10')" ,tags = {"스케줄"})
     @GetMapping("/schedule-list")
     public BaseResponse<ScheduleResponseDto> getScheduleListByUserUuidAndYearMonth(
+            @RequestHeader("userUuid") String userUuid,
            UserScheduleSearchRequestVo requestVo
     ) {
-        log.info("requestVo : "+requestVo);
-        UserScheduleSearchRequestDto dto = UserScheduleSearchRequestDto.from(requestVo);
-
         return new BaseResponse<>(
-                scheduleService.findByUserUuidAndYearMonth(dto)
+                scheduleService.findByUserUuidAndYearMonth(UserScheduleSearchRequestDto.of(userUuid, requestVo))
         );
     }
 
