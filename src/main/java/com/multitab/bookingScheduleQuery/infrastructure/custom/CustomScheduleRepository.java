@@ -13,6 +13,8 @@ public interface CustomScheduleRepository {
 
     void cancelMentorSchedule(String userUuid, String yearMonth, String sessionUuid);
 
+    void updateMentorScheduleStatus(String mentorUuid, String sessionUuid, String yearMonth, Status status);
+
     void reRegisterMentorSchedule(String userUuid, String yearMonth, String sessionUuid);
 
     Schedule findByUserScheduleOrderByStartDateAsc(String userUuid, String yearMonth);

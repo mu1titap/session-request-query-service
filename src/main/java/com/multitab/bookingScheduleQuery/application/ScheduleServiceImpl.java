@@ -92,6 +92,13 @@ public class ScheduleServiceImpl implements  ScheduleService {
     }
 
     @Override
+    public void updateMentorScheduleStatus(SessionConfirmedMessage dto) {
+        String yearMonth = DateConverter.convertToYearMonth(dto.getStartDate());
+        customScheduleRepository.updateMentorScheduleStatus(dto.getMentorUuid(), dto.getSessionUuid(), yearMonth,
+                dto.getSessionIsConfirmed() ? Status.CONFIRMED : Status.CANCELLED_BY_SYSTEM);
+    }
+
+    @Override
     public void updateMenteeSchedule(AfterSessionUserOutDto dto) {
         log.info("멘티 스케줄 업데이트 dto : "+dto);
         SessionTimeResponseOutDto sessionTime = mentoringServiceFeignClient.getSessionTime(dto.getSessionUuid());
