@@ -128,4 +128,24 @@ public class KafkaConsumerConfig {
         return factory;
     }
 
+    /**
+     * 세션 확정 여부 업데이트
+     */
+    @Bean
+    public ConsumerFactory<String, SessionConfirmedMessage> sessionConfirmedConsumerFactory(){
+        Map<String, Object> props = new HashMap<>();
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaClusterUri);
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, "kafka-sessionRequest-query-service");
+        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
+        props.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
+        return new DefaultKafkaConsumerFactory<>(props, new StringDeserializer(), new JsonDeserializer<>(SessionConfirmedMessage.class, false));
+    }
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, SessionConfirmedMessage> sessionConfirmedListener() {
+        ConcurrentKafkaListenerContainerFactory<String, SessionConfirmedMessage> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(sessionConfirmedConsumerFactory());
+        return factory;
+    }
+
 }

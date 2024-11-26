@@ -95,7 +95,15 @@ public class KafkaConsumer {
         log.info("updateSessionUser 성공 : " + dto);
     }
 
+    /**
+     * 세션 확정 -> 확정 여부에 따라 멘토 스케줄 상태 업데이트
+     */
+    @KafkaListener(topics = "update-session-confirmed", groupId = "kafka-sessionRequest-query-service",
+            containerFactory = "sessionConfirmedListener")
+    public void updateSessionConfirmed(SessionConfirmedMessage dto) {
+        scheduleService.updateMentorScheduleStatus(dto);
 
+    }
 
 
 }

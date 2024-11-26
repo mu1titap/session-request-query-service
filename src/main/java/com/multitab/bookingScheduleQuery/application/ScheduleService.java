@@ -13,7 +13,8 @@ public interface ScheduleService {
     void updateMentorSchedule(MentoringAddAfterOutDto dto);
     @Transactional
     void updateMentorSchedule(SessionCreatedAfterOutDto dto);
-
+    @Transactional
+    void updateMentorScheduleStatus(SessionConfirmedMessage dto);
     @Transactional
     void updateMenteeSchedule(AfterSessionUserOutDto dto);
     @Transactional

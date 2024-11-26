@@ -49,6 +49,19 @@ public class CustomScheduleRepositoryImpl implements CustomScheduleRepository {
     }
 
     @Override
+    public void updateMentorScheduleStatus(String mentorUuid, String sessionUuid, String yearMonth, Status status) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("userUuid").is(mentorUuid)
+                .and("yearMonth").is(yearMonth)
+                .and("scheduleLists.mentoringSessionUuid").is(sessionUuid)
+        );
+        Update update = new Update();
+        update.set("scheduleLists.$.status", status);
+        update.set("scheduleLists.$.updatedAt", LocalDateTime.now());
+        mongoTemplate.updateFirst(query, update, Schedule.class);
+    }
+
+    @Override
     public void reRegisterMentorSchedule(String userUuid, String yearMonth, String sessionUuid) {
         Query query = new Query();
         query.addCriteria(Criteria.where("userUuid").is(userUuid)

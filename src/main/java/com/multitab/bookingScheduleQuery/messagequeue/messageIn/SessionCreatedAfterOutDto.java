@@ -42,7 +42,7 @@ public class SessionCreatedAfterOutDto {
         return this.getSessionAddAfterOutDtos()
                 .stream()
                 .map(session -> ScheduleList.builder()
-                                    .mentoringSessionUuid(this.mentoringUuid)
+                                    .mentoringSessionUuid(session.getSessionUuid())
                                     .mentoringName(this.mentoringName)
                                     .startDate(session.getStartDate())
                                     .endDate(session.getEndDate())
