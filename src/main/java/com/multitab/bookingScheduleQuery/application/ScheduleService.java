@@ -1,9 +1,13 @@
 package com.multitab.bookingScheduleQuery.application;
 
 import com.multitab.bookingScheduleQuery.dto.in.UserScheduleSearchRequestDto;
+import com.multitab.bookingScheduleQuery.dto.out.MentoringSessionScheduleResponseDto;
 import com.multitab.bookingScheduleQuery.messagequeue.messageIn.*;
 import com.multitab.bookingScheduleQuery.dto.out.ScheduleResponseDto;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @Transactional(readOnly = true)
 public interface ScheduleService {
@@ -30,4 +34,6 @@ public interface ScheduleService {
      */
     // 유저 uuid, 년월 정보로 스케줄 조회
     ScheduleResponseDto findByUserUuidAndYearMonth(UserScheduleSearchRequestDto userScheduleSearchRequestDto);
+
+    List<MentoringSessionScheduleResponseDto> findTodaySessionSchedule(String userUuid, LocalDate date);
 }
