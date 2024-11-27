@@ -1,5 +1,6 @@
 package com.multitab.bookingScheduleQuery.infrastructure.custom;
 
+import com.multitab.bookingScheduleQuery.dto.out.MentoringSessionScheduleResponseDto;
 import com.multitab.bookingScheduleQuery.messagequeue.messageIn.AfterSessionUserOutDto;
 import com.multitab.bookingScheduleQuery.entity.Schedule;
 import com.multitab.bookingScheduleQuery.entity.vo.ScheduleList;
@@ -15,7 +16,9 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 
 import javax.swing.text.Document;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Comparator;
 import java.util.List;
 
@@ -132,6 +135,35 @@ public class CustomScheduleRepositoryImpl implements CustomScheduleRepository {
         update.set("scheduleLists.$.status", status);
         update.set("scheduleLists.$.updatedAt", LocalDateTime.now());
         mongoTemplate.updateFirst(query, update, Schedule.class);
+    }
+
+    @Override
+    public List<MentoringSessionScheduleResponseDto> findTodaySessionSchedule(String userUuid, String yearMonth, LocalDate startDate) {
+        Aggregation aggregation = Aggregation.newAggregation(
+                Aggregation.match(Criteria.where("userUuid").is(userUuid)
+                        .and("yearMonth").is(yearMonth)
+                ),
+                // 리스트 개별 문서처럼 분리
+                Aggregation.unwind("scheduleLists"), // scheduleLists 배열의 각 요소를 개별 문서로 분리
+                // 개별 문서 필터링
+                Aggregation.match(Criteria.where("scheduleLists.startDate").is(startDate)
+                        .and("scheduleLists.status").is(Status.CONFIRMED)
+                ),
+                Aggregation.sort(Sort.by(Sort.Order.desc("scheduleLists.startTime"))),
+                Aggregation.project("scheduleLists.mentoringSessionUuid", "scheduleLists.mentoringName",
+                                "scheduleLists.startDate", "scheduleLists.endDate",
+                                "scheduleLists.startTime", "scheduleLists.endTime")
+                        .and("scheduleLists.mentoringSessionUuid").as("sessionUuid")
+                        .and("scheduleLists.mentoringName").as("mentoringName")
+                        .and("scheduleLists.startDate").as("startDate")
+                        .and("scheduleLists.endDate").as("endDate")
+                        .and("scheduleLists.startTime").as("startTime")
+                        .and("scheduleLists.endTime").as("endTime")
+                        .and("scheduleLists.endTime").as("endTime")
+        );
+
+        return mongoTemplate.aggregate(aggregation, "user_schedule", MentoringSessionScheduleResponseDto.class)
+                .getMappedResults();
     }
 
 

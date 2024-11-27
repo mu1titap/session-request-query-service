@@ -1,6 +1,7 @@
 package com.multitab.bookingScheduleQuery.application;
 
 import com.multitab.bookingScheduleQuery.dto.in.UserScheduleSearchRequestDto;
+import com.multitab.bookingScheduleQuery.dto.out.MentoringSessionScheduleResponseDto;
 import com.multitab.bookingScheduleQuery.messagequeue.messageIn.*;
 import com.multitab.bookingScheduleQuery.dto.out.ScheduleResponseDto;
 import com.multitab.bookingScheduleQuery.entity.Schedule;
@@ -15,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -147,6 +149,13 @@ public class ScheduleServiceImpl implements  ScheduleService {
         Schedule schedule = customScheduleRepository.findByUserScheduleOrderByStartDateAsc
                 (userScheduleSearchRequestDto.getUserUuid(), userScheduleSearchRequestDto.getYearMonth());
         return ScheduleResponseDto.from(schedule);
+    }
+
+    // Todo : 스케줄 분리
+    @Override
+    public List<MentoringSessionScheduleResponseDto> findTodaySessionSchedule(String userUuid, LocalDate date) {
+        String yearMonth = DateConverter.convertToYearMonth(date);
+        return customScheduleRepository.findTodaySessionSchedule(userUuid, yearMonth, date);
     }
 
     // 스케줄 엔티티를 List 형태로 념겨 yearMonth : [ScheduleList] 형태로 매핑
