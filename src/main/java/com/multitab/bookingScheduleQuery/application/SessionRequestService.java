@@ -24,6 +24,11 @@ public interface SessionRequestService {
 
     @Transactional
     void updateSessionRequestStatus(SessionUserUpdateMessage dto);
+
+    // 세션 종료
+    @Transactional
+    void updateEndSession(String sessionUuid);
+
     /**
      * 조회
      */
