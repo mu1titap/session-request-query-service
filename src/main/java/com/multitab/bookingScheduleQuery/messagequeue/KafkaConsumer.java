@@ -105,6 +105,22 @@ public class KafkaConsumer {
 
     }
 
+    /**
+     * 세션 종료
+     */
+    @KafkaListener(topics = "end-session", groupId = "kafka-sessionRequest-query-service",
+            containerFactory = "endSessionListener")
+    public void endSession(EndSessionMessage dto) {
+        // 세션 참가리스트 업데이트 [확정 -> 완료]
+        if(dto != null)
+            sessionRequestService.updateEndSession(dto.getSessionUuid());
+
+        log.info("endSession 성공 : " + dto);
+
+
+    }
+
+
 
 }
 

@@ -18,5 +18,7 @@ public interface CustomSessionRequestRepository {
     void reRegisterSessionUser(ReRegisterSessionUserMessage dto);
 
     void updateSessionRequestStatus(String sessionUuid, String userUuid, Status status);
+
+    void updateEndSession(String sessionUuid);
 }
 
