@@ -11,7 +11,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@ToString(exclude = {"mentoringSessionAddAfterOutDtoList","mentoringCategoryAfterOutDtoList"})
+@ToString(exclude = {"mentoringSessionAddAfterOutDtoList", "mentoringCategoryAfterOutDtoList", "mentoringHashTagAfterOutDto"})
+
 //@ToString
 public class MentoringAddAfterOutDto {
     private String mentoringId;
@@ -37,6 +38,9 @@ public class MentoringAddAfterOutDto {
     private List<MentoringSessionAddAfterOutDto> mentoringSessionAddAfterOutDtoList;
 
     private List<MentoringCategoryAfterOutDto> mentoringCategoryAfterOutDtoList;
+
+    private MentoringHashTagAfterOutDto mentoringHashTagAfterOutDto;
+
 
     // 멘토링 저장 dto -> SessionRequest 엔티티
     public List<SessionRequest> toSessionRequestEntities() {

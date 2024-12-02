@@ -17,7 +17,10 @@ import java.time.LocalDateTime;
 public class AfterSessionUserOutDto {
     private String id; // 세션유저 Id
     private String sessionUuid;
+
     private String menteeUuid;
+    private String menteeImageUrl;
+
     private Status status;
 
     private String mentoringName;
@@ -29,6 +32,7 @@ public class AfterSessionUserOutDto {
     public SessionRequestMenteeList toMongoSessionRequestMenteeList() {
         return SessionRequestMenteeList.builder()
                 .menteeUuid(this.menteeUuid)
+                .menteeImageUrl(this.menteeImageUrl)
                 .status(this.status)
                 .createdAt(this.createdAt)
                 .updatedAt(this.updatedAt)
