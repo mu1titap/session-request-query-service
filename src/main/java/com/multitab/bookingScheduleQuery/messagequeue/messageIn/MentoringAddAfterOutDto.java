@@ -1,6 +1,7 @@
 package com.multitab.bookingScheduleQuery.messagequeue.messageIn;
 
 import com.multitab.bookingScheduleQuery.entity.SessionRequest;
+import com.multitab.bookingScheduleQuery.entity.SessionUserHistory;
 import com.multitab.bookingScheduleQuery.entity.vo.ScheduleList;
 import lombok.*;
 
@@ -13,7 +14,6 @@ import java.util.List;
 @Builder
 @ToString(exclude = {"mentoringSessionAddAfterOutDtoList", "mentoringCategoryAfterOutDtoList", "mentoringHashTagAfterOutDto"})
 
-//@ToString
 public class MentoringAddAfterOutDto {
     private String mentoringId;
 
@@ -77,4 +77,22 @@ public class MentoringAddAfterOutDto {
                 .toList();
     }
 
+
+    public List<SessionUserHistory> toSessionUserHistories() {
+        return this.getMentoringSessionAddAfterOutDtoList()
+                .stream()
+                .map(session -> SessionUserHistory.builder()
+                        .userUuid(this.mentorUuid) // 멘토 uuid
+                        .mentoringSessionUuid(session.getSessionUuid())
+                        .mentoringName(this.getName())
+                        .price(session.getPrice())
+                        .startDate(session.getStartDate())
+                        .endDate(session.getEndDate())
+                        .startTime(session.getStartTime())
+                        .endTime(session.getEndTime())
+                        .createdAt(session.getCreatedAt())
+                        .updatedAt(session.getUpdatedAt())
+                        .build())
+                .toList();
+    }
 }

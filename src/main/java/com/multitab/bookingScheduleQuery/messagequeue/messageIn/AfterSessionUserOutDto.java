@@ -1,9 +1,11 @@
 package com.multitab.bookingScheduleQuery.messagequeue.messageIn;
 
 import com.multitab.bookingScheduleQuery.entity.Schedule;
+import com.multitab.bookingScheduleQuery.entity.SessionUserHistory;
 import com.multitab.bookingScheduleQuery.entity.vo.ScheduleList;
 import com.multitab.bookingScheduleQuery.entity.vo.SessionRequestMenteeList;
 import com.multitab.bookingScheduleQuery.entity.vo.Status;
+import com.multitab.bookingScheduleQuery.serviceCall.dto.in.SessionTimeResponseOutDto;
 import com.multitab.bookingScheduleQuery.util.DateConverter;
 import lombok.*;
 
@@ -34,6 +36,20 @@ public class AfterSessionUserOutDto {
                 .menteeUuid(this.menteeUuid)
                 .menteeImageUrl(this.menteeImageUrl)
                 .status(this.status)
+                .createdAt(this.createdAt)
+                .updatedAt(this.updatedAt)
+                .build();
+    }
+
+    public SessionUserHistory toSessionUserHistory(SessionTimeResponseOutDto sessionTimeDto){
+        return SessionUserHistory.builder()
+                .userUuid(this.menteeUuid)
+                .mentoringSessionUuid(this.sessionUuid)
+                .mentoringName(this.mentoringName)
+                .startDate(sessionTimeDto.getStartDate())
+                .startTime(sessionTimeDto.getStartTime())
+                .endDate(sessionTimeDto.getEndDate())
+                .endTime(sessionTimeDto.getEndTime())
                 .createdAt(this.createdAt)
                 .updatedAt(this.updatedAt)
                 .build();
