@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @Builder
 public class SessionRequestMenteeList {
     private String menteeUuid;
+    private String nickname;
     private String menteeImageUrl;
     private Status status;
     private LocalDateTime createdAt;

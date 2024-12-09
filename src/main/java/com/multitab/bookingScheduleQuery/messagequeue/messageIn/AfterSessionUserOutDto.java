@@ -21,6 +21,7 @@ public class AfterSessionUserOutDto {
     private String sessionUuid;
 
     private String menteeUuid;
+    private String nickName;
     private String menteeImageUrl;
 
     private Status status;
@@ -34,6 +35,7 @@ public class AfterSessionUserOutDto {
     public SessionRequestMenteeList toMongoSessionRequestMenteeList() {
         return SessionRequestMenteeList.builder()
                 .menteeUuid(this.menteeUuid)
+                .nickname(this.nickName)
                 .menteeImageUrl(this.menteeImageUrl)
                 .status(this.status)
                 .createdAt(this.createdAt)
