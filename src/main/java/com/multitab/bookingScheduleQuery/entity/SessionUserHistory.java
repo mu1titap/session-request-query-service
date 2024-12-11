@@ -18,12 +18,12 @@ import java.time.LocalTime;
 @Document(collection = "session_user_history")
 @Builder
 public class SessionUserHistory {
+    //
     @Id
     private String id;
     private String userUuid;
     private String mentoringSessionUuid;
     private String mentoringName;
-
 
     private LocalDate startDate;
     private LocalTime startTime;
