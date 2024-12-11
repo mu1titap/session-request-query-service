@@ -1,7 +1,11 @@
 package com.multitab.bookingScheduleQuery.infrastructure.custom;
 
+import com.multitab.bookingScheduleQuery.dto.in.SessionUserScheduleSearchRequestDto;
+import com.multitab.bookingScheduleQuery.dto.out.MentoringSessionScheduleResponseDto;
 import com.multitab.bookingScheduleQuery.dto.out.SessionUserHistoryResponseDto;
+import com.multitab.bookingScheduleQuery.dto.out.SessionUserHistoryScheduleResponseDto;
 import com.multitab.bookingScheduleQuery.entity.SessionUserHistory;
+import com.multitab.bookingScheduleQuery.entity.vo.ScheduleList;
 import com.multitab.bookingScheduleQuery.entity.vo.Status;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -18,9 +22,11 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
@@ -155,5 +161,57 @@ public class CustomSessionUserHistoryRepositoryImpl implements  CustomSessionUse
                 .orElse(0L);
 
         return PageableExecutionUtils.getPage(content, pageable, () -> total);
+    }
+
+    @Override
+    public SessionUserHistoryScheduleResponseDto findHistoryByFromToDate(SessionUserScheduleSearchRequestDto dto) {
+        log.info("dto : {}", dto);
+        Criteria criteria = Criteria.where("userUuid").is(dto.getUserUuid())
+                .and("startDate").gte(dto.getStartDate())
+                .and("endDate").lte(dto.getEndDate());
+
+        Aggregation aggregation = Aggregation.newAggregation(
+                Aggregation.match(criteria),
+                Aggregation.sort(Sort.by(Sort.Order.asc("startDate"), Sort.Order.asc("startTime"))),
+                Aggregation.project("mentoringName", "mentoringSessionUuid", "startDate", "endDate", "startTime", "endTime",
+                                "status", "createdAt", "updatedAt")
+                        .and("mentoringName").as("mentoringName")
+                        .and("mentoringSessionUuid").as("mentoringSessionUuid")
+                        .and("startDate").as("startDate")
+                        .and("endDate").as("endDate")
+                        .and("startTime").as("startTime")
+                        .and("endTime").as("endTime")
+                        .and("status").as("status")
+                        .and("createdAt").as("createdAt")
+                        .and("updatedAt").as("updatedAt")
+        );
+
+        List<ScheduleList> scheduleLists = mongoTemplate.aggregate(aggregation, "session_user_history", ScheduleList.class)
+                .getMappedResults();
+        return SessionUserHistoryScheduleResponseDto.builder()
+                .scheduleLists(scheduleLists)
+                .build();
+    }
+
+    @Override
+    public List<MentoringSessionScheduleResponseDto> findTodayHistorySchedule(String userUuid, LocalDate date) {
+        Criteria criteria = Criteria.where("userUuid").is(userUuid)
+                .and("startDate").is(date)
+                .and("status").is(Status.CONFIRMED);
+
+        Aggregation aggregation = Aggregation.newAggregation(
+                Aggregation.match(criteria),
+                Aggregation.sort(Sort.by(Sort.Order.asc("startDate"), Sort.Order.asc("startTime"))),
+                Aggregation.project("mentoringName", "mentoringSessionUuid", "startDate", "endDate", "startTime", "endTime")
+                        .and("mentoringName").as("mentoringName")
+                        .and("mentoringSessionUuid").as("sessionUuid")
+                        .and("startDate").as("startDate")
+                        .and("endDate").as("endDate")
+                        .and("startTime").as("startTime")
+                        .and("endTime").as("endTime")
+        );
+
+        return mongoTemplate.aggregate(aggregation, "session_user_history", MentoringSessionScheduleResponseDto.class)
+                .getMappedResults();
     }
 }

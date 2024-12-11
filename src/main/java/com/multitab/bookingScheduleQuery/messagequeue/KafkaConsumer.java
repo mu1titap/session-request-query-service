@@ -1,6 +1,5 @@
 package com.multitab.bookingScheduleQuery.messagequeue;
 
-import com.multitab.bookingScheduleQuery.application.ScheduleService;
 import com.multitab.bookingScheduleQuery.application.SessionRequestService;
 import com.multitab.bookingScheduleQuery.application.SessionUserHistoryService;
 import com.multitab.bookingScheduleQuery.messagequeue.messageIn.*;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class KafkaConsumer {
     private final SessionRequestService sessionRequestService;
-    private final ScheduleService scheduleService;
     private final SessionUserHistoryService sessionUserHistoryService;
 
     /**
@@ -28,7 +26,7 @@ public class KafkaConsumer {
         // 멘토링 세션 참가 리스트 Read Data 생성
         sessionRequestService.createSessionRequestList(dto);
         // 멘토 스케줄 insert or push update
-        scheduleService.updateMentorSchedule(dto);
+        //scheduleService.updateMentorSchedule(dto);
         // 유저 이력 업데이트
         sessionUserHistoryService.createSessionHistoryForMento(dto);
     }
@@ -41,7 +39,7 @@ public class KafkaConsumer {
     public void addSession(SessionCreatedAfterOutDto dto) {
         sessionRequestService.createSessionRequestList(dto);
         // 멘토 스케줄 insert or push update
-        scheduleService.updateMentorSchedule(dto);
+        //scheduleService.updateMentorSchedule(dto);
         // 유저 이력 업데이트
         sessionUserHistoryService.createSessionHistoryForMento(dto);
     }
@@ -57,7 +55,7 @@ public class KafkaConsumer {
         // 세션 참가리스트 업데이트
         sessionRequestService.updateSessionRequestList(dto);
         // 유저(멘티)의 스케줄 insert or update
-        scheduleService.updateMenteeSchedule(dto);
+        //scheduleService.updateMenteeSchedule(dto);
         // 유저(멘티) 세션 히스토리 insert
         sessionUserHistoryService.createSessionHistoryForMentee(dto);
     }
@@ -73,7 +71,7 @@ public class KafkaConsumer {
         // 세션 참가리스트 업데이트 (취소 상태로)
         sessionRequestService.cancelSessionUser(dto);
         // 유저 스케줄 업데이트
-        scheduleService.cancelSessionUser(dto);
+        //scheduleService.cancelSessionUser(dto);
         // 유저 이력 업데이트
         sessionUserHistoryService.cancelSessionUserHistory(dto);
     }
@@ -88,7 +86,7 @@ public class KafkaConsumer {
         // 세션 참가리스트 업데이트 (취소 -> 대기 상태)
         sessionRequestService.reRegisterSessionUser(dto);
         // 유저 스케줄 업데이트
-        scheduleService.reRegisterSessionUser(dto);
+        //scheduleService.reRegisterSessionUser(dto);
         // 유저 이력 업데이트 (취소 -> 대기)
         sessionUserHistoryService.reRegisterSessionUserHistory(dto);
     }
@@ -103,7 +101,7 @@ public class KafkaConsumer {
         // 세션 참가리스트 업데이트
         sessionRequestService.updateSessionRequestStatus(dto);
         // 유저 스케줄 업데이트
-        scheduleService.updateSessionUserStatus(dto);
+        //scheduleService.updateSessionUserStatus(dto);
         // 유저 이력 업데이트 (확정 or 최소인원미달 취소)
         sessionUserHistoryService.updateSessionUserHistoryStatus(dto);
 
@@ -117,7 +115,7 @@ public class KafkaConsumer {
     public void updateSessionConfirmed(SessionConfirmedMessage dto) {
         log.info("updateSessionConfirmed : {}", dto);
         // 세션 참가리스트 업데이트
-        scheduleService.updateMentorScheduleStatus(dto);
+        //scheduleService.updateMentorScheduleStatus(dto);
         // 멘토 세션 유저 히스토리 업데이트
         sessionUserHistoryService.updateMentoSessionUserHistoryStatus(dto);
     }

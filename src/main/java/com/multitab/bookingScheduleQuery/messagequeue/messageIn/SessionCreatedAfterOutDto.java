@@ -1,6 +1,5 @@
 package com.multitab.bookingScheduleQuery.messagequeue.messageIn;
 
-import com.multitab.bookingScheduleQuery.entity.Schedule;
 import com.multitab.bookingScheduleQuery.entity.SessionRequest;
 import com.multitab.bookingScheduleQuery.entity.SessionUserHistory;
 import com.multitab.bookingScheduleQuery.entity.vo.ScheduleList;

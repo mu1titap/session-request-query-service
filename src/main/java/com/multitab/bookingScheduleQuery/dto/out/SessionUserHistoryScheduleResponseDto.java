@@ -6,15 +6,18 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Getter
-public class ScheduleResponseDto {
-    private String userUuid;
-    private String yearMonth;
+public class SessionUserHistoryScheduleResponseDto {
+//    private String userUuid;
+//    private String yearMonth;
     private List<ScheduleList> scheduleLists;
+
+
 
 }
