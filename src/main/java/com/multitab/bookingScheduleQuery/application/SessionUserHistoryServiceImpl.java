@@ -1,6 +1,9 @@
 package com.multitab.bookingScheduleQuery.application;
 
+import com.multitab.bookingScheduleQuery.dto.in.SessionUserScheduleSearchRequestDto;
+import com.multitab.bookingScheduleQuery.dto.out.MentoringSessionScheduleResponseDto;
 import com.multitab.bookingScheduleQuery.dto.out.SessionUserHistoryResponseDto;
+import com.multitab.bookingScheduleQuery.dto.out.SessionUserHistoryScheduleResponseDto;
 import com.multitab.bookingScheduleQuery.entity.SessionUserHistory;
 import com.multitab.bookingScheduleQuery.entity.vo.Status;
 import com.multitab.bookingScheduleQuery.infrastructure.SessionUserHistoryMongoRepository;
@@ -14,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -75,6 +79,16 @@ public class SessionUserHistoryServiceImpl implements SessionUserHistoryService 
     @Override
     public Page<SessionUserHistoryResponseDto> searchSessionUserHistory(String userUuid, Pageable pageable, Boolean includeCancelled) {
         return customSessionUserHistoryRepository.searchSessionUserHistory(userUuid, pageable, includeCancelled);
+    }
+
+    @Override
+    public SessionUserHistoryScheduleResponseDto findHistoryByFromToDate(SessionUserScheduleSearchRequestDto sessionUserScheduleSearchRequestDto) {
+        return customSessionUserHistoryRepository.findHistoryByFromToDate(sessionUserScheduleSearchRequestDto);
+    }
+
+    @Override
+    public List<MentoringSessionScheduleResponseDto> findTodayHistorySchedule(String userUuid, LocalDate date) {
+        return customSessionUserHistoryRepository.findTodayHistorySchedule(userUuid, date);
     }
 
 }

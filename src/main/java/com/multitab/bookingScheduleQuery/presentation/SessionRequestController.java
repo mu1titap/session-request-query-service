@@ -1,6 +1,5 @@
 package com.multitab.bookingScheduleQuery.presentation;
 
-import com.multitab.bookingScheduleQuery.application.ScheduleService;
 import com.multitab.bookingScheduleQuery.application.SessionRequestService;
 import com.multitab.bookingScheduleQuery.common.entity.BaseResponse;
 import com.multitab.bookingScheduleQuery.dto.in.UserScheduleSearchRequestDto;
