@@ -81,7 +81,7 @@ jobs:
              \"client_payload\": {
                \"repository\": \"$ECR_REPOSITORY\",
                \"tag\": \"${{ steps.tags.outputs.image_tag }}\",
-               \"service_name\": \"session-query-service\"
+               \"service_name\": \"session-request-query-service\"
              }
            }"
            
