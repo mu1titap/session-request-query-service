@@ -33,7 +33,7 @@ public class SessionUserHistoryServiceImpl implements SessionUserHistoryService 
         sessionUserHistories.forEach(SessionUserHistory::initStatus);
         sessionUserHistoryMongoRepository.saveAll(sessionUserHistories);
     }
-
+//
     @Override
     public void createSessionHistoryForMento(SessionCreatedAfterOutDto dto) {
         List<SessionUserHistory> sessionUserHistories = dto.toSessionUserHistories();
