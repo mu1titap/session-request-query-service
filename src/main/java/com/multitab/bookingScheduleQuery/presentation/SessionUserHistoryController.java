@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 public class SessionUserHistoryController {
     private final SessionUserHistoryService sessionRequestService;
     @Operation(summary = "멘토링 세션 참여 내역 조회 (페이지네이션)", description = "includeCancelled == true => 대기,확정,완료 된 세션참여내역 조회. <br/>" +
-                "includeCancelled == false => 취소(사용자취소, 최소인원미달로 인한 시스템 취소)된 세션참여내역 조회"
+                "includeCancelled == false => 취소(사용자취소, 최소인원미달로 인한 시스템 취소)된 세션참여내역 조회 ."
             ,tags = {"멘토링 세션 히스토리"})
     @GetMapping("/")
     public BaseResponse<Page<SessionUserHistoryResponseDto>> getSessionRequestInfo(
